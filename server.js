@@ -1,38 +1,72 @@
 const express = require('express');
 const cors = require('cors');
-const axios = require('axios');
+const mqtt = require('mqtt');
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
 
-const TASMOTA_IP = "172.20.10.3";
 const RATE_PER_KWH = 22;
 
-const SCHEDULE = {
-    enabled: false,
-    startHour: 6,
-    endHour: 22
+// MQTT CONFIG
+const MQTT_HOST = 'mqtts://4864dde839b2426c9e7ac0a2232ef9a4.s1.eu.hivemq.cloud';
+const MQTT_USER = 'raweproxy';
+const MQTT_PASS = 'Rawe1234';
+const MQTT_TOPIC = 'sonoff1';
+
+// Connect to HiveMQ
+const client = mqtt.connect(MQTT_HOST, {
+    port: 8883,
+    username: MQTT_USER,
+    password: MQTT_PASS,
+    protocol: 'mqtts'
+});
+
+// Store latest power data
+let powerData = {
+    voltage: 0, current: 0, power: 0,
+    todayKwh: 0, totalKwh: 0, cost: "0.00"
 };
 
+client.on('connect', () => {
+    console.log('MQTT Connected to HiveMQ!');
+    client.subscribe(`tele/${MQTT_TOPIC}/SENSOR`);
+    client.subscribe(`stat/${MQTT_TOPIC}/POWER`);
+});
+
+client.on('message', (topic, message) => {
+    try {
+        const data = JSON.parse(message.toString());
+        if (topic === `tele/${MQTT_TOPIC}/SENSOR` && data.ENERGY) {
+            const e = data.ENERGY;
+            powerData = {
+                voltage: e.Voltage,
+                current: e.Current,
+                power: e.Power,
+                todayKwh: e.Today,
+                totalKwh: e.Total,
+                cost: (e.Today * RATE_PER_KWH).toFixed(2)
+            };
+        }
+    } catch (err) {}
+});
+
+client.on('error', (err) => {
+    console.log('MQTT Error:', err.message);
+});
+
+const SCHEDULE = { enabled: false, startHour: 6, endHour: 22 };
 function isWithinSchedule() {
     if (!SCHEDULE.enabled) return true;
     const hour = new Date().getHours();
     return hour >= SCHEDULE.startHour && hour < SCHEDULE.endHour;
 }
 
-let stationStatus = {
-    state: "FREE",
-    user: null,
-    startedAt: null
-};
-
+let stationStatus = { state: "FREE", user: null, startedAt: null };
 let currentOTP = null;
 let isBlocked = false;
 let parkingStatus = {
-    available: true,
-    free: true,
-    rate: 20,
+    available: true, free: true, rate: 20,
     slots: [true, true, true, true]
 };
 
@@ -49,89 +83,47 @@ app.get('/status', (req, res) => {
 });
 
 // ON
-app.get('/on', async (req, res) => {
+app.get('/on', (req, res) => {
     if (isBlocked) return res.status(403).send({ error: "Station is blocked by admin" });
     if (stationStatus.state === "BUSY") return res.status(409).send({ error: "Station is currently BUSY" });
     if (!isWithinSchedule()) return res.status(403).send({ error: "Station is closed. Allowed hours: 6am-10pm" });
     if (!req.query.otp || req.query.otp !== currentOTP) return res.status(401).send({ error: "Invalid or missing OTP" });
 
-    // Try to turn on Sonoff
-    try {
-        await axios.get(`http://${TASMOTA_IP}/cm?cmnd=Power%20ON`, { timeout: 3000 });
-        console.log("Sonoff turned ON");
-    } catch (e) {
-        console.log("Sonoff unreachable - continuing anyway");
-    }
+    // Turn ON via MQTT
+    client.publish(`cmnd/${MQTT_TOPIC}/Power`, 'ON');
+    console.log("Sonoff turned ON via MQTT");
 
     currentOTP = null;
-    stationStatus = {
-        state: "BUSY",
-        user: req.query.user || "Guest",
-        startedAt: new Date()
-    };
+    stationStatus = { state: "BUSY", user: req.query.user || "Guest", startedAt: new Date() };
     res.send({ status: 'ON', station: stationStatus });
 });
 
 // OFF
-app.get('/off', async (req, res) => {
-    // Try to turn off Sonoff
-    try {
-        await axios.get(`http://${TASMOTA_IP}/cm?cmnd=Power%20OFF`, { timeout: 3000 });
-        console.log("Sonoff turned OFF");
-    } catch (e) {
-        console.log("Sonoff unreachable - continuing anyway");
-    }
+app.get('/off', (req, res) => {
+    client.publish(`cmnd/${MQTT_TOPIC}/Power`, 'OFF');
+    console.log("Sonoff turned OFF via MQTT");
 
-    stationStatus = {
-        state: "FREE",
-        user: null,
-        startedAt: null
-    };
+    stationStatus = { state: "FREE", user: null, startedAt: null };
     res.send({ status: 'OFF', station: stationStatus });
 });
 
-// ADMIN BLOCK/UNBLOCK
+// ADMIN
 app.get('/admin/block', (req, res) => {
     isBlocked = true;
     res.send({ message: "Station BLOCKED by admin" });
 });
-
 app.get('/admin/unblock', (req, res) => {
     isBlocked = false;
     res.send({ message: "Station UNBLOCKED by admin" });
 });
 
-// POWER DATA from Sonoff
-app.get('/power', async (req, res) => {
-    try {
-        const response = await axios.get(
-            `http://${TASMOTA_IP}/cm?cmnd=Status%208`,
-            { timeout: 5000 }
-        );
-        const energy = response.data.StatusSNS.ENERGY;
-        res.send({
-            voltage:  energy.Voltage,
-            current:  energy.Current,
-            power:    energy.Power,
-            todayKwh: energy.Today,
-            totalKwh: energy.Total,
-            cost:     (energy.Today * RATE_PER_KWH).toFixed(2)
-        });
-    } catch (e) {
-        console.log("Tasmota power error:", e.message);
-        res.status(500).send({
-            error: "Could not read power data",
-            voltage: 0, current: 0, power: 0,
-            todayKwh: 0, totalKwh: 0, cost: "0.00"
-        });
-    }
+// POWER DATA
+app.get('/power', (req, res) => {
+    res.send(powerData);
 });
 
-// PARKING STATUS
-app.get('/parking', (req, res) => {
-    res.send(parkingStatus);
-});
-
+// PARKING
+app.get('/parking', (req, res) => { res.send(parkingStatus); });
 app.post('/parking/update', (req, res) => {
     const { available, free, rate, slots } = req.body;
     if (available !== undefined) parkingStatus.available = available;
@@ -143,5 +135,4 @@ app.post('/parking/update', (req, res) => {
 
 app.listen(3000, () => {
     console.log('Server running at http://localhost:3000');
-    console.log(`Tasmota IP: ${TASMOTA_IP}`);
 });
