@@ -70,6 +70,10 @@ let parkingStatus = {
     slots: [true, true, true, true]
 };
 
+// --- Admin Approval System ---
+let pendingRequests = {};   // store OTP requests with status
+let adminMode = "auto";     // default mode: "auto" or "approval"
+
 // OTP
 app.get('/request-otp', (req, res) => {
     currentOTP = Math.floor(100000 + Math.random() * 900000).toString();
@@ -79,7 +83,12 @@ app.get('/request-otp', (req, res) => {
 
 // STATUS
 app.get('/status', (req, res) => {
-    res.send({ ...stationStatus, blocked: isBlocked });
+    const { otp } = req.query;
+    if (otp && pendingRequests[otp]) {
+        res.send({ status: pendingRequests[otp].status });
+    } else {
+        res.send({ ...stationStatus, blocked: isBlocked });
+    }
 });
 
 // ON
@@ -89,13 +98,17 @@ app.get('/on', (req, res) => {
     if (!isWithinSchedule()) return res.status(403).send({ error: "Station is closed. Allowed hours: 6am-10pm" });
     if (!req.query.otp || req.query.otp !== currentOTP) return res.status(401).send({ error: "Invalid or missing OTP" });
 
-    // Turn ON via MQTT
-    client.publish(`cmnd/${MQTT_TOPIC}/Power`, 'ON');
-    console.log("Sonoff turned ON via MQTT");
+    if (adminMode === "auto") {
+        client.publish(`cmnd/${MQTT_TOPIC}/Power`, 'ON');
+        console.log("Sonoff turned ON via MQTT");
 
-    currentOTP = null;
-    stationStatus = { state: "BUSY", user: req.query.user || "Guest", startedAt: new Date() };
-    res.send({ status: 'ON', station: stationStatus });
+        currentOTP = null;
+        stationStatus = { state: "BUSY", user: req.query.user || "Guest", startedAt: new Date() };
+        res.send({ status: 'APPROVED', station: stationStatus });
+    } else {
+        pendingRequests[currentOTP] = { status: "PENDING", user: req.query.user || "Guest" };
+        res.send({ status: "PENDING", message: "Waiting for admin approval" });
+    }
 });
 
 // OFF
@@ -107,7 +120,42 @@ app.get('/off', (req, res) => {
     res.send({ status: 'OFF', station: stationStatus });
 });
 
-// ADMIN
+// --- ADMIN ROUTES ---
+app.post('/admin/mode', (req, res) => {
+    const { mode } = req.body; // "auto" or "approval"
+    adminMode = mode;
+    res.send({ success: true, mode });
+});
+
+app.post('/admin/approve', (req, res) => {
+    const { otp } = req.body;
+    if (pendingRequests[otp]) {
+        pendingRequests[otp].status = "APPROVED";
+        client.publish(`cmnd/${MQTT_TOPIC}/Power`, 'ON');
+        stationStatus = { state: "BUSY", user: pendingRequests[otp].user, startedAt: new Date() };
+        res.send({ success: true, otp });
+    } else {
+        res.send({ success: false, message: "OTP not found" });
+    }
+});
+
+app.post('/admin/reject', (req, res) => {
+    const { otp } = req.body;
+    if (pendingRequests[otp]) {
+        pendingRequests[otp].status = "REJECTED";
+        res.send({ success: true, otp });
+    } else {
+        res.send({ success: false, message: "OTP not found" });
+    }
+});
+
+app.post('/admin/force', (req, res) => {
+    const { action } = req.body; // "ON" or "OFF"
+    client.publish(`cmnd/${MQTT_TOPIC}/Power`, action);
+    res.send({ success: true, action });
+});
+
+// ADMIN block/unblock
 app.get('/admin/block', (req, res) => {
     isBlocked = true;
     res.send({ message: "Station BLOCKED by admin" });
