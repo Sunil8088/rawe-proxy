@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RAWE Admin</title>
+  <style>
+    :root{
+      --bg:#08131f;--card:#0f2135;--card2:#12283f;
+      --text:#ecf5ff;--muted:#93abc9;--line:rgba(255,255,255,.08);
+      --blue:#4f8cff;--cyan:#33d6ff;--green:#22c55e;
+      --red:#ff5c73;--orange:#ffb020;
+      --shadow:0 16px 40px rgba(0,0,0,.35);--radius:22px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:Inter,Segoe UI,Arial,sans-serif;
+      background:
+        radial-gradient(circle at top left,rgba(79,140,255,.22),transparent 28%),
+        radial-gradient(circle at top right,rgba(51,214,255,.12),transparent 26%),
+        linear-gradient(180deg,#050b14,var(--bg));
+      color:var(--text);min-height:100vh;padding:18px;
+    }
+    .wrap{max-width:1050px;margin:auto}
+
+    /* ── LOGIN GATE ── */
+    #login-gate{
+      position:fixed;inset:0;z-index:999;
+      background:radial-gradient(circle at top left,rgba(79,140,255,.22),transparent 28%),
+        linear-gradient(180deg,#050b14,var(--bg));
+      display:flex;align-items:center;justify-content:center;
+    }
+    .login-box{
+      background:rgba(255,255,255,.05);border:1px solid var(--line);
+      border-radius:var(--radius);padding:36px 32px;width:100%;max-width:360px;
+      box-shadow:0 32px 80px rgba(0,0,0,.5);
+    }
+    .login-box h2{font-size:22px;margin-bottom:6px}
+    .login-box p{font-size:13px;color:var(--muted);margin-bottom:22px}
+    .login-box input{
+      width:100%;padding:12px 14px;border-radius:12px;
+      background:rgba(255,255,255,.07);border:1px solid var(--line);
+      color:var(--text);font-size:15px;outline:none;margin-bottom:14px;
+    }
+    .login-box input:focus{border-color:var(--blue)}
+    .login-box button{
+      width:100%;padding:13px;border-radius:13px;border:none;
+      background:linear-gradient(135deg,var(--blue),var(--cyan));
+      color:#fff;font-size:15px;font-weight:700;cursor:pointer;transition:.2s;
+    }
+    .login-box button:hover{transform:translateY(-2px)}
+    .login-err{font-size:12px;color:var(--red);margin-top:10px;text-align:center;display:none}
+
+    /* ── TOPBAR ── */
+    .topbar{
+      display:flex;justify-content:space-between;align-items:center;
+      gap:12px;flex-wrap:wrap;padding:18px 20px;
+      background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.03));
+      border:1px solid var(--line);border-radius:var(--radius);
+      box-shadow:var(--shadow);animation:fadeDown .6s ease both;margin-bottom:16px;
+    }
+    .brand h1{font-size:22px;line-height:1.1}
+    .brand p{font-size:13px;color:var(--muted);margin-top:5px}
+    .badge{
+      padding:10px 14px;border-radius:999px;
+      border:1px solid rgba(79,140,255,.25);background:rgba(79,140,255,.12);
+      color:#dce9ff;font-size:13px;font-weight:600;
+    }
+
+    /* ── GRID ── */
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+    .card{
+      background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.03));
+      border:1px solid var(--line);border-radius:var(--radius);
+      box-shadow:var(--shadow);padding:18px;animation:fadeUp .7s ease both;
+    }
+    .stat{grid-column:span 3}.wide{grid-column:span 7}
+    .side{grid-column:span 5}.full{grid-column:span 12}
+    .label{color:var(--muted);font-size:13px}
+    .value{font-size:26px;font-weight:800;margin-top:8px}
+    .sub{font-size:12px;color:var(--muted);margin-top:8px}
+
+    .row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+    .row h2,.row h3{font-size:18px}
+    .toggle-box{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+
+    /* ── SWITCH ── */
+    .switch{
+      width:68px;height:36px;border-radius:999px;
+      background:#20314c;border:1px solid var(--line);
+      position:relative;cursor:pointer;transition:.25s;flex-shrink:0;
+    }
+    .switch::after{
+      content:"";width:28px;height:28px;border-radius:50%;background:white;
+      position:absolute;top:3px;left:4px;transition:.25s;
+      box-shadow:0 6px 16px rgba(0,0,0,.3);
+    }
+    .switch.on{background:linear-gradient(135deg,var(--blue),var(--cyan))}
+    .switch.on::after{left:35px}
+
+    /* ── PILLS & BTNS ── */
+    .pill{
+      padding:8px 12px;border-radius:999px;font-size:12px;font-weight:700;
+      border:1px solid var(--line);background:rgba(255,255,255,.04);color:#dbe8ff;
+    }
+    .pill.green{border-color:rgba(34,197,94,.25);background:rgba(34,197,94,.12);color:#bff5d0}
+    .pill.red{border-color:rgba(255,92,115,.25);background:rgba(255,92,115,.12);color:#ffd0d8}
+    .pill.orange{border-color:rgba(255,176,32,.25);background:rgba(255,176,32,.12);color:#ffe1ad}
+    .controls{display:grid;gap:12px}
+    .control{padding:14px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
+    .control-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+    .control-top strong{font-size:15px}
+    .control-top span{font-size:12px;color:var(--muted)}
+    .btns{display:flex;gap:10px;flex-wrap:wrap}
+    button{border:none;cursor:pointer;transition:.2s;font-weight:700}
+    .btn{padding:11px 14px;border-radius:13px;color:white;min-width:120px}
+    .btn:hover{transform:translateY(-2px)}
+    .btn-blue{background:linear-gradient(135deg,var(--blue),var(--cyan))}
+    .btn-green{background:linear-gradient(135deg,#22c55e,#16a34a)}
+    .btn-red{background:linear-gradient(135deg,#ff5c73,#ff7b59)}
+    .btn-dark{background:rgba(255,255,255,.07);border:1px solid var(--line);color:var(--text)}
+    .btn-orange{background:linear-gradient(135deg,#ffb020,#f97316)}
+
+    /* ── STATUS LINE ── */
+    .status-line{
+      display:flex;justify-content:space-between;align-items:center;
+      gap:10px;padding:12px 14px;margin-top:12px;
+      border-radius:14px;background:rgba(255,255,255,.04);border:1px solid var(--line);
+    }
+    .dot{
+      width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:8px;
+      background:var(--green);box-shadow:0 0 14px rgba(34,197,94,.55);animation:pulse 1.8s infinite;
+    }
+    .dot.red{background:var(--red);box-shadow:0 0 14px rgba(255,92,115,.55)}
+    .dot.orange{background:var(--orange);box-shadow:0 0 14px rgba(255,176,32,.55)}
+
+    /* ── POWER GRID ── */
+    .power-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+    .power-item{
+      padding:12px;border-radius:14px;background:rgba(255,255,255,.04);
+      border:1px solid var(--line);text-align:center;
+    }
+    .power-icon{font-size:18px;margin-bottom:4px}
+    .power-value{font-size:20px;font-weight:800;margin-bottom:2px}
+    .power-label{font-size:11px;color:var(--muted)}
+
+    /* ── REQUESTS LIST ── */
+    .list{display:grid;gap:12px}
+    .req-item{
+      padding:14px;border-radius:16px;
+      background:rgba(255,255,255,.04);border:1px solid var(--line);
+      display:flex;justify-content:space-between;align-items:center;
+      gap:12px;flex-wrap:wrap;
+    }
+    .req-item strong{display:block;font-size:15px}
+    .req-item span{font-size:12px;color:var(--muted);display:block;margin-top:4px}
+    .req-item .btns{gap:8px}
+    .empty-msg{
+      text-align:center;padding:28px;color:var(--muted);font-size:14px;
+      border-radius:14px;background:rgba(255,255,255,.02);border:1px dashed var(--line);
+    }
+
+    /* ── SESSION LOG ── */
+    .log-list{display:grid;gap:10px;margin-top:4px}
+    .log-item{
+      padding:12px 14px;border-radius:14px;
+      background:rgba(255,255,255,.03);border:1px solid var(--line);
+      display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;
+    }
+    .log-item strong{font-size:14px}
+    .log-item span{font-size:12px;color:var(--muted)}
+
+    /* ── TOAST ── */
+    .toast{
+      position:fixed;left:50%;bottom:22px;
+      transform:translateX(-50%) translateY(20px);
+      background:rgba(8,19,31,.96);color:var(--text);
+      border:1px solid var(--line);border-radius:14px;
+      padding:12px 18px;box-shadow:var(--shadow);
+      opacity:0;transition:.25s;z-index:999;pointer-events:none;font-size:14px;
+    }
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+    @keyframes fadeDown{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,.5)}70%{box-shadow:0 0 0 8px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+    @media(max-width:900px){.stat{grid-column:span 6}.wide,.side{grid-column:span 12}.power-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:640px){.stat{grid-column:span 12}.btn{width:100%}}
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════ LOGIN GATE ═══════════════ -->
+<div id="login-gate">
+  <div class="login-box">
+    <h2>⚡ RAWE Admin</h2>
+    <p>Enter the admin password to continue</p>
+    <input id="pw-input" type="password" placeholder="Password" onkeydown="if(event.key==='Enter')tryLogin()" />
+    <button onclick="tryLogin()">Unlock Dashboard</button>
+    <div class="login-err" id="login-err">❌ Wrong password. Try again.</div>
+  </div>
+</div>
+
+<!-- ═══════════════ MAIN DASHBOARD ═══════════════ -->
+<div class="wrap" id="dashboard" style="display:none">
+  <div class="topbar">
+    <div class="brand">
+      <h1>RAWE Admin</h1>
+      <p>BTM Tech Hub — Live station control</p>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <span class="badge" id="mode-badge">Mode: Auto</span>
+      <span class="badge" id="station-badge">Station: FREE</span>
+    </div>
+  </div>
+
+  <div class="grid">
+
+    <!-- ── STAT CARDS ── -->
+    <div class="card stat">
+      <div class="label">Station</div>
+      <div class="value" id="stat-station">FREE</div>
+      <div class="sub" id="stat-user">No active session</div>
+    </div>
+    <div class="card stat">
+      <div class="label">Booking Mode</div>
+      <div class="value" id="stat-mode" style="font-size:18px;margin-top:10px">Auto OTP</div>
+      <div class="sub">Switch below</div>
+    </div>
+    <div class="card stat">
+      <div class="label">Pending Requests</div>
+      <div class="value" id="stat-pending" style="color:#ffb020">0</div>
+      <div class="sub">Awaiting approval</div>
+    </div>
+    <div class="card stat">
+      <div class="label">Blocked</div>
+      <div class="value" id="stat-blocked">NO</div>
+      <div class="sub">Admin lock status</div>
+    </div>
+
+    <!-- ── QUICK CONTROLS ── -->
+    <div class="card wide">
+      <div class="row">
+        <h2>Quick Controls</h2>
+        <div class="toggle-box">
+          <span class="pill green" id="onlinePill">Online</span>
+          <div class="switch on" id="onlineSwitch" onclick="toggleBlock()"></div>
+        </div>
+      </div>
+      <div class="controls">
+
+        <!-- Booking Mode -->
+        <div class="control">
+          <div class="control-top">
+            <div>
+              <strong>Booking Mode</strong>
+              <span>Auto = instant OTP approval · Approval = admin must approve each request</span>
+            </div>
+            <span class="pill orange" id="bookingPill">Auto OTP</span>
+          </div>
+          <div class="btns">
+            <button class="btn btn-blue" onclick="setMode('approval')">👤 Admin Approval</button>
+            <button class="btn btn-dark" onclick="setMode('auto')">⚡ Auto OTP</button>
+          </div>
+        </div>
+
+        <!-- Force Power -->
+        <div class="control">
+          <div class="control-top">
+            <div>
+              <strong>Force Power Control</strong>
+              <span>Bypass OTP — directly control the Sonoff relay</span>
+            </div>
+            <span class="pill orange">Hardware Direct</span>
+          </div>
+          <div class="btns">
+            <button class="btn btn-green" onclick="forcePower('ON')">⚡ Force ON</button>
+            <button class="btn btn-red" onclick="forcePower('OFF')">⏹ Force OFF</button>
+          </div>
+        </div>
+
+        <!-- Block/Unblock -->
+        <div class="control">
+          <div class="control-top">
+            <div>
+              <strong>Block / Unblock Station</strong>
+              <span>Block prevents all new charging requests</span>
+            </div>
+            <span class="pill" id="blockPill">Not Blocked</span>
+          </div>
+          <div class="btns">
+            <button class="btn btn-red" onclick="blockStation()">🔒 Block Station</button>
+            <button class="btn btn-green" onclick="unblockStation()">🔓 Unblock Station</button>
+          </div>
+        </div>
+
+        <!-- Parking -->
+        <div class="control">
+          <div class="control-top">
+            <div>
+              <strong>Parking Status</strong>
+              <span>Shown on the customer dashboard</span>
+            </div>
+            <span class="pill green" id="parkingPill">Available</span>
+          </div>
+          <div class="btns">
+            <button class="btn btn-green" onclick="setParking(true)">✅ Mark Available</button>
+            <button class="btn btn-red" onclick="setParking(false)">🚫 Mark Full</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── LIVE STATUS & POWER ── -->
+    <div class="card side">
+      <div class="row"><h3>Live Station Status</h3></div>
+      <div class="status-line">
+        <div><span class="dot" id="statusDot"></span><strong id="statusMsg">Checking...</strong></div>
+        <span class="pill green" id="statusBadge">LIVE</span>
+      </div>
+
+      <div class="power-grid">
+        <div class="power-item">
+          <div class="power-icon">⚡</div>
+          <div class="power-value" id="pm-voltage" style="color:#00ccff">--</div>
+          <div class="power-label">Voltage (V)</div>
+        </div>
+        <div class="power-item">
+          <div class="power-icon">🔌</div>
+          <div class="power-value" id="pm-current" style="color:#ff9900">--</div>
+          <div class="power-label">Current (A)</div>
+        </div>
+        <div class="power-item">
+          <div class="power-icon">💡</div>
+          <div class="power-value" id="pm-power" style="color:#22c55e">--</div>
+          <div class="power-label">Power (W)</div>
+        </div>
+        <div class="power-item">
+          <div class="power-icon">🔋</div>
+          <div class="power-value" id="pm-today" style="color:#cc99ff">--</div>
+          <div class="power-label">Today (kWh)</div>
+        </div>
+        <div class="power-item">
+          <div class="power-icon">📊</div>
+          <div class="power-value" id="pm-total" style="color:#99ccff">--</div>
+          <div class="power-label">Total (kWh)</div>
+        </div>
+        <div class="power-item">
+          <div class="power-icon">💰</div>
+          <div class="power-value" id="pm-cost" style="color:#ff99cc">--</div>
+          <div class="power-label">Cost (₹)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PENDING REQUESTS ── -->
+    <div class="card full">
+      <div class="row">
+        <h3>⏳ Customer Requests <span id="pending-count-badge" style="font-size:13px;color:var(--orange);margin-left:6px"></span></h3>
+        <span style="color:var(--muted);font-size:13px">Auto-refreshes every 4 seconds</span>
+      </div>
+      <div class="list" id="requests-list">
+        <div class="empty-msg">No pending requests right now</div>
+      </div>
+    </div>
+
+    <!-- ── SESSION LOG ── -->
+    <div class="card full">
+      <div class="row">
+        <h3>📋 Session Log</h3>
+        <button class="btn btn-dark" style="min-width:auto;padding:8px 14px;font-size:12px" onclick="clearLog()">Clear</button>
+      </div>
+      <div class="log-list" id="session-log">
+        <div class="empty-msg">No sessions logged yet</div>
+      </div>
+    </div>
+
+  </div><!-- /grid -->
+</div><!-- /wrap -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const ADMIN_PASS = 'Rawe@admin';
+  const BASE = '';
+  let sessionLog = [];
+
+  /* ── LOGIN ── */
+  function tryLogin() {
+    const pw = document.getElementById('pw-input').value;
+    if (pw === ADMIN_PASS) {
+      document.getElementById('login-gate').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      startPolling();
+    } else {
+      document.getElementById('login-err').style.display = 'block';
+      document.getElementById('pw-input').value = '';
+    }
+  }
+
+  /* ── TOAST ── */
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2400);
+  }
+
+  /* ── REFRESH STATUS ── */
+  async function refreshStatus() {
+    try {
+      const r = await fetch(BASE + '/status');
+      const d = await r.json();
+
+      const state = d.state || 'FREE';
+      const blocked = d.blocked || false;
+
+      // Stat cards
+      document.getElementById('stat-station').textContent = blocked ? 'BLOCKED' : state;
+      document.getElementById('stat-station').style.color =
+        blocked ? '#ffb020' : state === 'BUSY' ? '#ff5c73' : '#22c55e';
+      document.getElementById('stat-user').textContent =
+        d.user ? 'In use by: ' + d.user : 'No active session';
+      document.getElementById('stat-blocked').textContent = blocked ? 'YES' : 'NO';
+      document.getElementById('stat-blocked').style.color = blocked ? '#ff5c73' : '#22c55e';
+
+      // Status line
+      const dot = document.getElementById('statusDot');
+      const msg = document.getElementById('statusMsg');
+      const badge = document.getElementById('statusBadge');
+      dot.className = 'dot' + (blocked ? ' orange' : state === 'BUSY' ? ' red' : '');
+      msg.textContent = blocked ? 'Station is BLOCKED' : state === 'BUSY' ? ('Charging: ' + (d.user || 'Guest')) : 'Station is FREE';
+      badge.textContent = blocked ? 'BLOCKED' : state;
+      badge.className = 'pill ' + (blocked ? 'orange' : state === 'BUSY' ? 'red' : 'green');
+
+      // Topbar badges
+      document.getElementById('station-badge').textContent = 'Station: ' + (blocked ? 'BLOCKED' : state);
+      document.getElementById('blockPill').textContent = blocked ? '🔒 Blocked' : 'Not Blocked';
+      document.getElementById('blockPill').className = 'pill ' + (blocked ? 'red' : 'green');
+
+      // Switch visual
+      document.getElementById('onlineSwitch').className = 'switch ' + (!blocked ? 'on' : '');
+      document.getElementById('onlinePill').textContent = blocked ? 'Blocked' : 'Online';
+      document.getElementById('onlinePill').className = 'pill ' + (!blocked ? 'green' : 'red');
+
+    } catch(e) {}
+  }
+
+  /* ── REFRESH POWER ── */
+  async function refreshPower() {
+    try {
+      const r = await fetch(BASE + '/power');
+      const d = await r.json();
+      document.getElementById('pm-voltage').textContent = d.voltage + 'V';
+      document.getElementById('pm-current').textContent = d.current + 'A';
+      document.getElementById('pm-power').textContent = d.power + 'W';
+      document.getElementById('pm-today').textContent = d.todayKwh + ' kWh';
+      document.getElementById('pm-total').textContent = d.totalKwh + ' kWh';
+      document.getElementById('pm-cost').textContent = '₹' + d.cost;
+    } catch(e) {}
+  }
+
+  /* ── REFRESH PENDING REQUESTS ── */
+  async function refreshRequests() {
+    try {
+      const r = await fetch(BASE + '/admin/requests');
+      const d = await r.json();
+      const pending = d.filter(req => req.status === 'PENDING');
+
+      document.getElementById('stat-pending').textContent = pending.length;
+      const badge = document.getElementById('pending-count-badge');
+      badge.textContent = pending.length > 0 ? `(${pending.length} waiting)` : '';
+
+      const list = document.getElementById('requests-list');
+      if (pending.length === 0) {
+        list.innerHTML = '<div class="empty-msg">No pending requests right now</div>';
+        return;
+      }
+      list.innerHTML = pending.map(req => `
+        <div class="req-item">
+          <div>
+            <strong>${escHtml(req.user)}</strong>
+            <span>OTP: ${escHtml(req.otp)} · Requested at ${new Date(req.time).toLocaleTimeString()}</span>
+          </div>
+          <div class="btns">
+            <button class="btn btn-green" onclick="approveReq('${escHtml(req.otp)}','${escHtml(req.user)}')">✅ Approve</button>
+            <button class="btn btn-red" onclick="rejectReq('${escHtml(req.otp)}','${escHtml(req.user)}')">❌ Reject</button>
+          </div>
+        </div>
+      `).join('');
+    } catch(e) {}
+  }
+
+  /* ── APPROVE ── */
+  async function approveReq(otp, user) {
+    try {
+      const r = await fetch(BASE + '/admin/approve', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ otp })
+      });
+      const d = await r.json();
+      if (d.success) {
+        toast('✅ Approved — charging started for ' + user);
+        addLog('APPROVED', user, otp);
+        refreshRequests(); refreshStatus();
+      } else {
+        toast('⚠️ Could not approve: ' + (d.message || 'Unknown error'));
+      }
+    } catch(e) { toast('❌ Server error'); }
+  }
+
+  /* ── REJECT ── */
+  async function rejectReq(otp, user) {
+    try {
+      const r = await fetch(BASE + '/admin/reject', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ otp })
+      });
+      const d = await r.json();
+      if (d.success) {
+        toast('🚫 Rejected request from ' + user);
+        addLog('REJECTED', user, otp);
+        refreshRequests();
+      }
+    } catch(e) { toast('❌ Server error'); }
+  }
+
+  /* ── MODE SWITCH ── */
+  async function setMode(mode) {
+    try {
+      const r = await fetch(BASE + '/admin/mode', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ mode })
+      });
+      const d = await r.json();
+      if (d.success) {
+        const label = mode === 'approval' ? 'Admin Approval' : 'Auto OTP';
+        document.getElementById('stat-mode').textContent = label;
+        document.getElementById('bookingPill').textContent = label;
+        document.getElementById('mode-badge').textContent = 'Mode: ' + label;
+        toast('Mode set to: ' + label);
+      }
+    } catch(e) { toast('❌ Server error'); }
+  }
+
+  /* ── FORCE POWER ── */
+  async function forcePower(action) {
+    try {
+      const r = await fetch(BASE + '/admin/force', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ action })
+      });
+      const d = await r.json();
+      if (d.success) {
+        toast((action === 'ON' ? '⚡ Force ON' : '⏹ Force OFF') + ' sent to Sonoff');
+        addLog('FORCE ' + action, 'Admin', '-');
+        refreshStatus();
+      }
+    } catch(e) { toast('❌ Server error'); }
+  }
+
+  /* ── BLOCK / UNBLOCK ── */
+  async function blockStation() {
+    try {
+      await fetch(BASE + '/admin/block');
+      toast('🔒 Station blocked');
+      addLog('BLOCKED', 'Admin', '-');
+      refreshStatus();
+    } catch(e) { toast('❌ Server error'); }
+  }
+  async function unblockStation() {
+    try {
+      await fetch(BASE + '/admin/unblock');
+      toast('🔓 Station unblocked');
+      addLog('UNBLOCKED', 'Admin', '-');
+      refreshStatus();
+    } catch(e) { toast('❌ Server error'); }
+  }
+
+  /* ── TOGGLE BLOCK via switch ── */
+  let _blocked = false;
+  async function toggleBlock() {
+    if (_blocked) { await unblockStation(); _blocked = false; }
+    else { await blockStation(); _blocked = true; }
+  }
+
+  /* ── PARKING ── */
+  async function setParking(available) {
+    try {
+      const slots = available ? [true,true,true,true] : [false,false,false,false];
+      await fetch(BASE + '/parking/update', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ available, free: available, slots })
+      });
+      document.getElementById('parkingPill').textContent = available ? 'Available' : 'Full';
+      document.getElementById('parkingPill').className = 'pill ' + (available ? 'green' : 'red');
+      toast(available ? '🅿️ Parking marked available' : '🚫 Parking marked full');
+    } catch(e) { toast('❌ Server error'); }
+  }
+
+  /* ── SESSION LOG ── */
+  function addLog(action, user, otp) {
+    sessionLog.unshift({ action, user, otp, time: new Date() });
+    if (sessionLog.length > 20) sessionLog.pop();
+    renderLog();
+  }
+  function renderLog() {
+    const el = document.getElementById('session-log');
+    if (sessionLog.length === 0) {
+      el.innerHTML = '<div class="empty-msg">No sessions logged yet</div>';
+      return;
+    }
+    el.innerHTML = sessionLog.map(s => `
+      <div class="log-item">
+        <div>
+          <strong>${escHtml(s.action)}</strong>
+          <span>User: ${escHtml(s.user)} · OTP: ${escHtml(s.otp)}</span>
+        </div>
+        <span style="font-size:12px;color:var(--muted)">${s.time.toLocaleTimeString()}</span>
+      </div>
+    `).join('');
+  }
+  function clearLog() {
+    sessionLog = [];
+    renderLog();
+    toast('Log cleared');
+  }
+
+  function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  /* ── POLLING ── */
+  function startPolling() {
+    refreshStatus(); refreshPower(); refreshRequests();
+    setInterval(refreshStatus, 5000);
+    setInterval(refreshPower, 4000);
+    setInterval(refreshRequests, 4000);
+  }
+</script>
+</body>
+</html>
