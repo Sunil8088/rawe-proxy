@@ -31,7 +31,6 @@
       -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
     .pill{padding:10px 18px;border-radius:999px;background:rgba(0,204,102,.15);
       border:1px solid rgba(0,204,102,.4);color:#99ffcc;font-size:13px;font-weight:600;}
-
     .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:24px;margin-bottom:24px;}
     .card,.station-card{
       background:linear-gradient(145deg,rgba(0,51,102,.98),rgba(0,19,51,.98));
@@ -43,47 +42,25 @@
       background:linear-gradient(135deg,var(--text) 0%,var(--green) 50%,var(--blue) 100%);
       -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
     .hero>div>p{color:var(--muted);font-size:15px;line-height:1.6;margin-bottom:20px;}
-
     .stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;}
     .stat{flex:1;min-width:90px;padding:16px;border-radius:16px;
       background:rgba(255,255,255,.04);border:1px solid var(--line);text-align:center;transition:.3s;}
     .stat:hover{background:rgba(255,255,255,.08);}
     .stat b{display:block;font-size:22px;margin-bottom:4px;font-weight:900;color:var(--green)}
     .stat span{font-size:11px;color:var(--muted);}
-
-    /* POWER METER */
-    .power-meter{
-      background:rgba(0,0,0,.3);border:1px solid rgba(0,204,102,.2);
-      border-radius:20px;padding:20px;margin-bottom:20px;
-    }
-    .power-meter-title{
-      display:flex;align-items:center;gap:8px;
-      font-size:12px;font-weight:700;color:#99ffcc;
-      text-transform:uppercase;letter-spacing:.5px;margin-bottom:16px;
-    }
+    .power-meter{background:rgba(0,0,0,.3);border:1px solid rgba(0,204,102,.2);border-radius:20px;padding:20px;margin-bottom:20px;}
+    .power-meter-title{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:#99ffcc;text-transform:uppercase;letter-spacing:.5px;margin-bottom:16px;}
     .power-live-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite;}
     .power-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-    .power-item{
-      padding:14px;border-radius:14px;
-      background:rgba(255,255,255,.04);border:1px solid var(--line);
-      text-align:center;transition:.3s;
-    }
+    .power-item{padding:14px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid var(--line);text-align:center;transition:.3s;}
     .power-item:hover{background:rgba(255,255,255,.08);}
     .power-icon{font-size:20px;margin-bottom:6px;}
     .power-value{font-size:22px;font-weight:900;margin-bottom:2px;}
     .power-label{font-size:11px;color:var(--muted);}
-    .power-voltage{color:#00ccff;}
-    .power-current{color:#ff9900;}
-    .power-watts{color:#00cc66;}
-    .power-cost{color:#ff99cc;}
-    .power-kwh{color:#cc99ff;}
-    .power-total{color:#99ccff;}
-
-    /* PARKING */
-    .parking-card{
-      background:rgba(0,204,102,.06);border:1px solid rgba(0,204,102,.2);
-      border-radius:18px;padding:18px;
-    }
+    .power-voltage{color:#00ccff;}.power-current{color:#ff9900;}
+    .power-watts{color:#00cc66;}.power-cost{color:#ff99cc;}
+    .power-kwh{color:#cc99ff;}.power-total{color:#99ccff;}
+    .parking-card{background:rgba(0,204,102,.06);border:1px solid rgba(0,204,102,.2);border-radius:18px;padding:18px;}
     .parking-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
     .parking-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:#99ffcc;text-transform:uppercase;letter-spacing:.5px;}
     .parking-badge{padding:5px 12px;border-radius:999px;font-size:12px;font-weight:700;}
@@ -95,103 +72,76 @@
     .slot-taken{background:rgba(255,68,68,.2);border:1px solid rgba(255,68,68,.4);color:#ff9999;}
     .parking-info{font-size:12px;color:var(--muted);display:flex;justify-content:space-between;align-items:center;}
     .parking-rate{font-size:12px;font-weight:700;color:#ffcc66;}
-    .parking-toggle-row{display:flex;gap:8px;margin-top:10px;}
-    .btn-parking{flex:1;padding:9px;border-radius:10px;border:none;font-size:12px;font-weight:700;cursor:pointer;transition:.2s;}
-    .btn-p-avail{background:rgba(0,204,102,.15);color:#99ffcc;border:1px solid rgba(0,204,102,.3);}
-    .btn-p-avail:hover{background:rgba(0,204,102,.3);}
-    .btn-p-full{background:rgba(255,68,68,.15);color:#ff9999;border:1px solid rgba(255,68,68,.3);}
-    .btn-p-full:hover{background:rgba(255,68,68,.3);}
-
-    /* STATION CARD RIGHT */
     .station-card h2{font-size:24px;font-weight:900;margin-bottom:4px;}
     .type{font-size:13px;color:#a8d0ff;}
     .price{font-size:20px;font-weight:900;color:#99ffcc;margin:12px 0;}
     .details{font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.5;}
     .meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
-    .chip{padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.08);
-      border:1px solid var(--line);font-size:11px;color:#d6e6ff;transition:.2s;}
+    .chip{padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid var(--line);font-size:11px;color:#d6e6ff;transition:.2s;}
     .chip:hover{background:rgba(255,255,255,.15);}
-
-    .status-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;
-      padding:11px 14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid var(--line);}
+    .status-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding:11px 14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid var(--line);}
     .status-dot{width:11px;height:11px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
     .status-dot.busy{background:var(--red);animation:pulse-red 2s infinite;}
     .status-dot.blocked{background:#ff9900;animation:pulse-orange 2s infinite;}
     .status-label{font-size:13px;font-weight:700;color:var(--green);}
-    .status-label.busy{color:var(--red);}
-    .status-label.blocked{color:#ff9900;}
+    .status-label.busy{color:var(--red);}.status-label.blocked{color:#ff9900;}
     .status-user{font-size:11px;color:var(--muted);margin-left:auto;}
-
-    .otp-section{background:rgba(0,153,255,.06);border:1px solid rgba(0,153,255,.25);
-      border-radius:16px;padding:16px;margin-bottom:14px;}
-    .otp-section-title{display:flex;align-items:center;gap:8px;
-      font-size:11px;font-weight:700;color:#99ccff;letter-spacing:.5px;
-      text-transform:uppercase;margin-bottom:12px;}
-    .otp-icon{width:24px;height:24px;border-radius:7px;background:rgba(0,153,255,.2);
-      border:1px solid rgba(0,153,255,.3);display:flex;align-items:center;justify-content:center;font-size:12px;}
-    input{width:100%;padding:11px 13px;border-radius:11px;
-      background:rgba(255,255,255,.07);border:1px solid rgba(0,162,255,.2);
-      color:var(--text);font-size:14px;outline:none;transition:.25s;margin-bottom:10px;}
+    .otp-section{background:rgba(0,153,255,.06);border:1px solid rgba(0,153,255,.25);border-radius:16px;padding:16px;margin-bottom:14px;}
+    .otp-section-title{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;color:#99ccff;letter-spacing:.5px;text-transform:uppercase;margin-bottom:12px;}
+    .otp-icon{width:24px;height:24px;border-radius:7px;background:rgba(0,153,255,.2);border:1px solid rgba(0,153,255,.3);display:flex;align-items:center;justify-content:center;font-size:12px;}
+    input{width:100%;padding:11px 13px;border-radius:11px;background:rgba(255,255,255,.07);border:1px solid rgba(0,162,255,.2);color:var(--text);font-size:14px;outline:none;transition:.25s;margin-bottom:10px;}
     input:focus{border-color:var(--blue);background:rgba(0,153,255,.1);box-shadow:0 0 0 3px rgba(0,153,255,.15);}
     input::placeholder{color:rgba(179,217,255,.35);}
     .input-row{display:flex;gap:8px;margin-bottom:6px;}
     .input-row input{margin-bottom:0;}
-    .btn-otp{padding:11px 14px;border-radius:11px;border:none;
-      background:rgba(0,153,255,.15);border:1px solid rgba(0,153,255,.35);
-      color:#99ccff;font-size:12px;font-weight:700;cursor:pointer;
-      transition:.25s;white-space:nowrap;}
+    .btn-otp{padding:11px 14px;border-radius:11px;border:none;background:rgba(0,153,255,.15);border:1px solid rgba(0,153,255,.35);color:#99ccff;font-size:12px;font-weight:700;cursor:pointer;transition:.25s;white-space:nowrap;}
     .btn-otp:hover{background:rgba(0,153,255,.3);transform:translateY(-2px);}
-    .otp-display{font-size:12px;color:#99ffcc;margin-top:8px;padding:8px 12px;
-      background:rgba(0,204,102,.1);border-radius:10px;border:1px solid rgba(0,204,102,.25);
-      display:none;align-items:center;gap:8px;animation:popIn .3s ease;}
-    .otp-tick{width:18px;height:18px;border-radius:50%;background:rgba(0,204,102,.3);
-      display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;}
-
+    .otp-display{font-size:12px;color:#99ffcc;margin-top:8px;padding:8px 12px;background:rgba(0,204,102,.1);border-radius:10px;border:1px solid rgba(0,204,102,.25);display:none;align-items:center;gap:8px;animation:popIn .3s ease;}
+    .otp-tick{width:18px;height:18px;border-radius:50%;background:rgba(0,204,102,.3);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;}
     .btn-group{display:flex;gap:10px;margin-bottom:14px;}
-    .btn-start{flex:1;padding:14px;border:none;border-radius:14px;
-      background:linear-gradient(135deg,#00cc66,#009944);color:#001a00;
-      font-weight:900;cursor:pointer;font-size:14px;
-      box-shadow:0 4px 20px rgba(0,204,102,.3);transition:.25s;}
+    .btn-start{flex:1;padding:14px;border:none;border-radius:14px;background:linear-gradient(135deg,#00cc66,#009944);color:#001a00;font-weight:900;cursor:pointer;font-size:14px;box-shadow:0 4px 20px rgba(0,204,102,.3);transition:.25s;}
     .btn-start:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,204,102,.5);}
-    .btn-stop{flex:1;padding:14px;border:none;border-radius:14px;
-      background:linear-gradient(135deg,#ff4444,#cc2200);color:#fff;
-      font-weight:900;cursor:pointer;font-size:14px;
-      box-shadow:0 4px 20px rgba(255,68,68,.3);transition:.25s;}
+    .btn-start:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+    .btn-stop{flex:1;padding:14px;border:none;border-radius:14px;background:linear-gradient(135deg,#ff4444,#cc2200);color:#fff;font-weight:900;cursor:pointer;font-size:14px;box-shadow:0 4px 20px rgba(255,68,68,.3);transition:.25s;}
     .btn-stop:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(255,68,68,.5);}
 
-    .admin-section{background:rgba(255,153,0,.05);border:1px solid rgba(255,153,0,.2);
-      border-radius:16px;padding:16px;}
-    .admin-section-title{display:flex;align-items:center;gap:8px;
-      font-size:11px;font-weight:700;color:#ffcc66;letter-spacing:.5px;
-      text-transform:uppercase;margin-bottom:12px;}
-    .admin-icon{width:24px;height:24px;border-radius:7px;background:rgba(255,153,0,.2);
-      border:1px solid rgba(255,153,0,.3);display:flex;align-items:center;justify-content:center;font-size:12px;}
-    .btn-admin-group{display:flex;gap:8px;}
-    .btn-block{flex:1;padding:12px;border-radius:12px;border:1px solid rgba(255,68,68,.3);
-      background:rgba(255,68,68,.08);color:#ff9999;font-size:12px;font-weight:700;cursor:pointer;transition:.25s;}
-    .btn-block:hover{background:rgba(255,68,68,.2);transform:translateY(-2px);}
-    .btn-unblock{flex:1;padding:12px;border-radius:12px;border:1px solid rgba(0,204,102,.3);
-      background:rgba(0,204,102,.08);color:#99ffcc;font-size:12px;font-weight:700;cursor:pointer;transition:.25s;}
-    .btn-unblock:hover{background:rgba(0,204,102,.2);transform:translateY(-2px);}
-    .admin-status{margin-top:10px;font-size:11px;color:var(--muted);
-      padding:7px 12px;background:rgba(255,255,255,.04);border-radius:8px;text-align:center;}
+    /* ── PENDING APPROVAL BANNER ── */
+    .pending-banner{
+      display:none;
+      background:rgba(255,176,32,.08);
+      border:1px solid rgba(255,176,32,.35);
+      border-radius:16px;padding:16px;margin-bottom:14px;
+      animation:popIn .35s ease;
+    }
+    .pending-banner.show{display:block;}
+    .pending-title{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700;color:#ffcc66;margin-bottom:8px;}
+    .pending-spinner{
+      width:18px;height:18px;border-radius:50%;
+      border:2px solid rgba(255,176,32,.3);border-top-color:#ffb020;
+      animation:spin .8s linear infinite;flex-shrink:0;
+    }
+    .pending-sub{font-size:12px;color:var(--muted);line-height:1.6;}
+    .pending-dots span{animation:blink 1.4s infinite both}
+    .pending-dots span:nth-child(2){animation-delay:.2s}
+    .pending-dots span:nth-child(3){animation-delay:.4s}
 
-    /* BOTTOM */
+    .admin-section{background:rgba(255,153,0,.05);border:1px solid rgba(255,153,0,.2);border-radius:16px;padding:16px;}
+    .admin-section-title{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;color:#ffcc66;letter-spacing:.5px;text-transform:uppercase;margin-bottom:12px;}
+    .admin-icon{width:24px;height:24px;border-radius:7px;background:rgba(255,153,0,.2);border:1px solid rgba(255,153,0,.3);display:flex;align-items:center;justify-content:center;font-size:12px;}
+    .btn-admin-group{display:flex;gap:8px;}
+    .btn-block{flex:1;padding:12px;border-radius:12px;border:1px solid rgba(255,68,68,.3);background:rgba(255,68,68,.08);color:#ff9999;font-size:12px;font-weight:700;cursor:pointer;transition:.25s;}
+    .btn-block:hover{background:rgba(255,68,68,.2);transform:translateY(-2px);}
+    .btn-unblock{flex:1;padding:12px;border-radius:12px;border:1px solid rgba(0,204,102,.3);background:rgba(0,204,102,.08);color:#99ffcc;font-size:12px;font-weight:700;cursor:pointer;transition:.25s;}
+    .btn-unblock:hover{background:rgba(0,204,102,.2);transform:translateY(-2px);}
+    .admin-status{margin-top:10px;font-size:11px;color:var(--muted);padding:7px 12px;background:rgba(255,255,255,.04);border-radius:8px;text-align:center;}
     .bottom-row{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;animation:fadeUp .9s ease both;animation-delay:.2s;}
-    .info-card{background:linear-gradient(145deg,rgba(0,51,102,.98),rgba(0,19,51,.98));
-      border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;text-align:center;transition:.3s;}
+    .info-card{background:linear-gradient(145deg,rgba(0,51,102,.98),rgba(0,19,51,.98));border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;text-align:center;transition:.3s;}
     .info-card:hover{transform:translateY(-4px);}
     .info-card .icon{font-size:28px;margin-bottom:8px;}
     .info-card h3{font-size:14px;font-weight:700;margin-bottom:6px;}
     .info-card p{font-size:12px;color:var(--muted);line-height:1.5;}
-
-    .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);
-      padding:12px 22px;border-radius:14px;font-size:13px;font-weight:600;
-      opacity:0;transition:.3s;pointer-events:none;z-index:999;
-      background:rgba(0,30,60,.98);border:1px solid var(--line);
-      box-shadow:var(--shadow);display:flex;align-items:center;gap:8px;}
+    .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);padding:12px 22px;border-radius:14px;font-size:13px;font-weight:600;opacity:0;transition:.3s;pointer-events:none;z-index:999;background:rgba(0,30,60,.98);border:1px solid var(--line);box-shadow:var(--shadow);display:flex;align-items:center;gap:8px;}
     .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-
     @keyframes fadeDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
     @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
     @keyframes popIn{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
@@ -200,6 +150,7 @@
     @keyframes pulse-orange{0%{box-shadow:0 0 0 0 rgba(255,153,0,.5)}70%{box-shadow:0 0 0 8px rgba(255,153,0,0)}100%{box-shadow:0 0 0 0 rgba(255,153,0,0)}}
     @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
     @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+    @keyframes blink{0%,80%,100%{opacity:0}40%{opacity:1}}
     .spin{animation:spin .7s linear infinite;}
     .shake{animation:shake .3s ease;}
     @media(max-width:900px){.hero{grid-template-columns:1fr}.bottom-row{grid-template-columns:1fr}}
@@ -211,20 +162,17 @@
     <div class="logo">RAWE ⚡ Charge</div>
     <div class="pill">BTM Tech Hub • Live Station</div>
   </div>
-
   <div class="hero">
     <!-- LEFT -->
     <div class="card">
       <h1>RAWE Charge</h1>
       <p>Premium EV charging in BTM. OTP secured, live monitored, always online.</p>
-
       <div class="stats">
         <div class="stat"><b>1</b><span>Station</span></div>
         <div class="stat"><b id="stat-status" style="color:var(--green)">FREE</b><span>Status</span></div>
         <div class="stat"><b>₹22</b><span>Per kWh</span></div>
         <div class="stat"><b>120kW</b><span>Power</span></div>
       </div>
-
       <!-- LIVE POWER METER -->
       <div class="power-meter">
         <div class="power-meter-title">
@@ -232,39 +180,14 @@
           Live Power Monitor
         </div>
         <div class="power-grid">
-          <div class="power-item">
-            <div class="power-icon">⚡</div>
-            <div class="power-value power-voltage" id="pm-voltage">--</div>
-            <div class="power-label">Voltage (V)</div>
-          </div>
-          <div class="power-item">
-            <div class="power-icon">🔌</div>
-            <div class="power-value power-current" id="pm-current">--</div>
-            <div class="power-label">Current (A)</div>
-          </div>
-          <div class="power-item">
-            <div class="power-icon">💡</div>
-            <div class="power-value power-watts" id="pm-power">--</div>
-            <div class="power-label">Power (W)</div>
-          </div>
-          <div class="power-item">
-            <div class="power-icon">🔋</div>
-            <div class="power-value power-kwh" id="pm-today">--</div>
-            <div class="power-label">Today (kWh)</div>
-          </div>
-          <div class="power-item">
-            <div class="power-icon">📊</div>
-            <div class="power-value power-total" id="pm-total">--</div>
-            <div class="power-label">Total (kWh)</div>
-          </div>
-          <div class="power-item">
-            <div class="power-icon">💰</div>
-            <div class="power-value power-cost" id="pm-cost">--</div>
-            <div class="power-label">Cost (₹)</div>
-          </div>
+          <div class="power-item"><div class="power-icon">⚡</div><div class="power-value power-voltage" id="pm-voltage">--</div><div class="power-label">Voltage (V)</div></div>
+          <div class="power-item"><div class="power-icon">🔌</div><div class="power-value power-current" id="pm-current">--</div><div class="power-label">Current (A)</div></div>
+          <div class="power-item"><div class="power-icon">💡</div><div class="power-value power-watts" id="pm-power">--</div><div class="power-label">Power (W)</div></div>
+          <div class="power-item"><div class="power-icon">🔋</div><div class="power-value power-kwh" id="pm-today">--</div><div class="power-label">Today (kWh)</div></div>
+          <div class="power-item"><div class="power-icon">📊</div><div class="power-value power-total" id="pm-total">--</div><div class="power-label">Total (kWh)</div></div>
+          <div class="power-item"><div class="power-icon">💰</div><div class="power-value power-cost" id="pm-cost">--</div><div class="power-label">Cost (₹)</div></div>
         </div>
       </div>
-
       <!-- PARKING -->
       <div class="parking-card" id="parking-card">
         <div class="parking-header">
@@ -276,10 +199,6 @@
           <span id="parking-info-text">4 of 4 spots free</span>
           <span class="parking-rate" id="parking-rate-text">🆓 Free Parking</span>
         </div>
-        <div class="parking-toggle-row">
-          <button class="btn-parking btn-p-avail" onclick="setParking(true)">✅ Mark Available</button>
-          <button class="btn-parking btn-p-full" onclick="setParking(false)">🚫 Mark Full</button>
-        </div>
       </div>
     </div>
 
@@ -288,13 +207,11 @@
       <h2>RAWE BTM Tech Hub</h2>
       <div class="type">Type 2 • 120kW</div>
       <div class="price">₹22 / kWh</div>
-
       <div class="status-row">
         <div class="status-dot" id="status-dot"></div>
         <span class="status-label" id="status-label">FREE</span>
         <span class="status-user" id="status-user"></span>
       </div>
-
       <div class="details">Ready for Ola, Ather, TVS, Yulu, Bajaj</div>
       <div class="meta">
         <div class="chip">24/7 Support</div>
@@ -303,11 +220,9 @@
         <div class="chip" id="parking-chip">🅿️ Parking Free</div>
       </div>
 
+      <!-- OTP -->
       <div class="otp-section">
-        <div class="otp-section-title">
-          <div class="otp-icon">🔑</div>
-          OTP Verification
-        </div>
+        <div class="otp-section-title"><div class="otp-icon">🔑</div>OTP Verification</div>
         <input id="username" type="text" placeholder="👤  Your name" />
         <div class="input-row">
           <input id="otp-input" type="text" placeholder="🔢  Enter 6-digit OTP" maxlength="6" />
@@ -321,16 +236,26 @@
         </div>
       </div>
 
+      <!-- ── PENDING APPROVAL BANNER ── -->
+      <div class="pending-banner" id="pending-banner">
+        <div class="pending-title">
+          <div class="pending-spinner"></div>
+          Waiting for Admin Approval
+        </div>
+        <div class="pending-sub">
+          Your request has been received. The admin will approve or reject it shortly<span class="pending-dots"><span>.</span><span>.</span><span>.</span></span>
+          <br><br>Please keep this screen open.
+        </div>
+      </div>
+
+      <!-- BUTTONS -->
       <div class="btn-group">
-        <button class="btn-start" onclick="startCharging()">⚡ START POWER</button>
+        <button class="btn-start" id="start-btn" onclick="startCharging()">⚡ START POWER</button>
         <button class="btn-stop" onclick="stopCharging()">⏹ STOP POWER</button>
       </div>
 
       <div class="admin-section">
-        <div class="admin-section-title">
-          <div class="admin-icon">🛡️</div>
-          Admin Controls
-        </div>
+        <div class="admin-section-title"><div class="admin-icon">🛡️</div>Admin Controls</div>
         <div class="btn-admin-group">
           <button class="btn-block" onclick="adminBlock()">🔒 Block Station</button>
           <button class="btn-unblock" onclick="adminUnblock()">🔓 Unblock Station</button>
@@ -341,171 +266,230 @@
   </div>
 
   <div class="bottom-row">
-    <div class="info-card">
-      <div class="icon">⚡</div>
-      <h3>Live Power Data</h3>
-      <p>Real-time voltage, current and energy tracked directly from your Sonoff device.</p>
-    </div>
-    <div class="info-card">
-      <div class="icon">🅿️</div>
-      <h3>Parking Status</h3>
-      <p>Check parking availability before heading to the station — no more surprises.</p>
-    </div>
-    <div class="info-card">
-      <div class="icon">🛡️</div>
-      <h3>Admin Control</h3>
-      <p>Block or unblock the station instantly. Full control from this dashboard.</p>
-    </div>
+    <div class="info-card"><div class="icon">⚡</div><h3>Live Power Data</h3><p>Real-time voltage, current and energy tracked directly from your Sonoff device.</p></div>
+    <div class="info-card"><div class="icon">🅿️</div><h3>Parking Status</h3><p>Check parking availability before heading to the station — no more surprises.</p></div>
+    <div class="info-card"><div class="icon">🛡️</div><h3>Admin Control</h3><p>Block or unblock the station instantly. Full control from this dashboard.</p></div>
   </div>
 </div>
-
 <div class="toast" id="toast"><span id="toast-icon"></span><span id="toast-msg"></span></div>
 
 <script>
 const BASE = '';
 let parkingSlots = [true,true,true,true];
+let pendingOTP = null;          // OTP we're waiting for admin to approve
+let approvalPollTimer = null;   // interval handle for approval polling
 
+/* ── TOAST ── */
 function showToast(msg, icon, color) {
   const t = document.getElementById('toast');
   document.getElementById('toast-msg').textContent = msg;
-  document.getElementById('toast-icon').textContent = icon||'';
-  t.style.color = color||'#e6f3ff';
+  document.getElementById('toast-icon').textContent = icon || '';
+  t.style.color = color || '#e6f3ff';
   t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),3000);
+  setTimeout(() => t.classList.remove('show'), 3500);
 }
 
+/* ── PARKING ── */
 function renderParkingSlots() {
   const c = document.getElementById('parking-slots');
   c.innerHTML = '';
-  parkingSlots.forEach((free,i)=>{
+  parkingSlots.forEach((free, i) => {
     const s = document.createElement('div');
-    s.className = 'slot '+(free?'slot-free':'slot-taken');
-    s.textContent = 'P'+(i+1);
+    s.className = 'slot ' + (free ? 'slot-free' : 'slot-taken');
+    s.textContent = 'P' + (i + 1);
     c.appendChild(s);
   });
   const freeCount = parkingSlots.filter(Boolean).length;
-  document.getElementById('parking-info-text').textContent = freeCount+' of '+parkingSlots.length+' spots free';
+  document.getElementById('parking-info-text').textContent = freeCount + ' of ' + parkingSlots.length + ' spots free';
 }
 
-function setParking(available) {
-  parkingSlots = available ? [true,true,true,true] : [false,false,false,false];
-  const badge = document.getElementById('parking-badge');
-  const chip = document.getElementById('parking-chip');
-  const card = document.getElementById('parking-card');
-  if(available){
-    badge.className='parking-badge badge-available'; badge.textContent='Available';
-    chip.textContent='🅿️ Parking Free';
-    card.style.background='rgba(0,204,102,.06)'; card.style.borderColor='rgba(0,204,102,.2)';
-    showToast('Parking marked as available','🅿️','#99ffcc');
-  } else {
-    badge.className='parking-badge badge-full'; badge.textContent='Full';
-    chip.textContent='🅿️ Parking Full';
-    card.style.background='rgba(255,68,68,.06)'; card.style.borderColor='rgba(255,68,68,.2)';
-    showToast('Parking marked as full','🚫','#ff9999');
-  }
-  renderParkingSlots();
-}
-
+/* ── POWER ── */
 async function refreshPower() {
   try {
-    const r = await fetch(BASE+'/power');
+    const r = await fetch(BASE + '/power');
     const d = await r.json();
-    if(!d.error){
-      document.getElementById('pm-voltage').textContent = d.voltage+'V';
-      document.getElementById('pm-current').textContent = d.current+'A';
-      document.getElementById('pm-power').textContent = d.power+'W';
-      document.getElementById('pm-today').textContent = d.todayKwh+' kWh';
-      document.getElementById('pm-total').textContent = d.totalKwh+' kWh';
-      document.getElementById('pm-cost').textContent = '₹'+d.cost;
+    if (!d.error) {
+      document.getElementById('pm-voltage').textContent = d.voltage + 'V';
+      document.getElementById('pm-current').textContent = d.current + 'A';
+      document.getElementById('pm-power').textContent = d.power + 'W';
+      document.getElementById('pm-today').textContent = d.todayKwh + ' kWh';
+      document.getElementById('pm-total').textContent = d.totalKwh + ' kWh';
+      document.getElementById('pm-cost').textContent = '₹' + d.cost;
       document.getElementById('power-dot').style.background = '#00cc66';
     }
-  } catch(e){
-    document.getElementById('power-dot').style.background = '#ff4444';
-  }
+  } catch(e) { document.getElementById('power-dot').style.background = '#ff4444'; }
 }
 
+/* ── STATUS ── */
 async function refreshStatus() {
   try {
-    const r = await fetch(BASE+'/status');
+    const r = await fetch(BASE + '/status');
     const d = await r.json();
     const dot = document.getElementById('status-dot');
     const label = document.getElementById('status-label');
     const stat = document.getElementById('stat-status');
     const adminSt = document.getElementById('admin-status');
-    dot.className='status-dot'; label.className='status-label';
-    if(d.blocked){
+    dot.className = 'status-dot';
+    label.className = 'status-label';
+    if (d.blocked) {
       dot.classList.add('blocked'); label.classList.add('blocked');
-      label.textContent='BLOCKED'; stat.textContent='BLOCKED'; stat.style.color='#ff9900';
-      adminSt.textContent='⛔ Station is currently blocked'; adminSt.style.color='#ffcc66';
-    } else if(d.state==='BUSY'){
+      label.textContent = 'BLOCKED'; stat.textContent = 'BLOCKED'; stat.style.color = '#ff9900';
+      adminSt.textContent = '⛔ Station is currently blocked'; adminSt.style.color = '#ffcc66';
+    } else if (d.state === 'BUSY') {
       dot.classList.add('busy'); label.classList.add('busy');
-      label.textContent='BUSY'; stat.textContent='BUSY'; stat.style.color='#ff4444';
-      adminSt.textContent='✅ Station is operational'; adminSt.style.color='var(--muted)';
+      label.textContent = 'BUSY'; stat.textContent = 'BUSY'; stat.style.color = '#ff4444';
+      adminSt.textContent = '✅ Station is operational'; adminSt.style.color = 'var(--muted)';
     } else {
-      label.textContent='FREE'; stat.textContent='FREE'; stat.style.color='#00cc66';
-      adminSt.textContent='✅ Station is operational'; adminSt.style.color='var(--muted)';
+      label.textContent = 'FREE'; stat.textContent = 'FREE'; stat.style.color = '#00cc66';
+      adminSt.textContent = '✅ Station is operational'; adminSt.style.color = 'var(--muted)';
     }
-    document.getElementById('status-user').textContent = d.user?'In use by: '+d.user:'';
-  } catch(e){}
+    document.getElementById('status-user').textContent = d.user ? 'In use by: ' + d.user : '';
+  } catch(e) {}
 }
 
+/* ── PARKING (own poll, independent of status) ── */
+async function refreshParking() {
+  try {
+    const pr = await fetch(BASE + '/parking');
+    const pd = await pr.json();
+    const badge = document.getElementById('parking-badge');
+    const chip = document.getElementById('parking-chip');
+    const card = document.getElementById('parking-card');
+    parkingSlots = pd.slots && pd.slots.length === 4 ? pd.slots : parkingSlots;
+    if (pd.available) {
+      badge.className = 'parking-badge badge-available'; badge.textContent = 'Available';
+      chip.textContent = '🅿️ Parking Free';
+      card.style.background = 'rgba(0,204,102,.06)'; card.style.borderColor = 'rgba(0,204,102,.2)';
+    } else {
+      badge.className = 'parking-badge badge-full'; badge.textContent = 'Full';
+      chip.textContent = '🅿️ Parking Full';
+      card.style.background = 'rgba(255,68,68,.06)'; card.style.borderColor = 'rgba(255,68,68,.2)';
+    }
+    renderParkingSlots();
+  } catch(e) {}
+}
+
+/* ── REQUEST OTP ── */
 async function requestOTP() {
   const icon = document.getElementById('otp-btn-icon');
   icon.classList.add('spin');
   try {
-    const r = await fetch(BASE+'/request-otp');
+    const r = await fetch(BASE + '/request-otp');
     const d = await r.json();
-    document.getElementById('otp-text').textContent = 'OTP: '+d.otp+' — auto-filled!';
+    document.getElementById('otp-text').textContent = 'OTP: ' + d.otp + ' — auto-filled!';
     const el = document.getElementById('otp-display');
-    el.style.display='flex';
+    el.style.display = 'flex';
     document.getElementById('otp-input').value = d.otp;
-    showToast('OTP ready! Click Start Power','🔑','#99ffcc');
-  } catch(e){ showToast('Cannot reach server','❌','#ff6666'); }
-  finally{ icon.classList.remove('spin'); }
+    showToast('OTP ready! Click Start Power', '🔑', '#99ffcc');
+  } catch(e) { showToast('Cannot reach server', '❌', '#ff6666'); }
+  finally { icon.classList.remove('spin'); }
 }
 
+/* ── START CHARGING ── */
 async function startCharging() {
-  const user = document.getElementById('username').value||'Guest';
+  const user = document.getElementById('username').value || 'Guest';
   const otp = document.getElementById('otp-input').value;
-  if(!otp){
+  if (!otp) {
     document.getElementById('otp-input').classList.add('shake');
-    setTimeout(()=>document.getElementById('otp-input').classList.remove('shake'),400);
-    showToast('Get an OTP first!','⚠️','#ffcc66'); return;
+    setTimeout(() => document.getElementById('otp-input').classList.remove('shake'), 400);
+    showToast('Get an OTP first!', '⚠️', '#ffcc66');
+    return;
   }
   try {
     const r = await fetch(`${BASE}/on?user=${encodeURIComponent(user)}&otp=${otp}`);
     const d = await r.json();
-    if(d.error){ showToast(d.error,'❌','#ff6666'); }
-    else {
-      showToast('Charging started! Welcome, '+user,'⚡','#99ffcc');
-      document.getElementById('otp-display').style.display='none';
-      document.getElementById('otp-input').value='';
+
+    if (d.status === 'PENDING') {
+      // ── Admin approval mode ──
+      pendingOTP = otp;
+      showPendingBanner(true);
+      showToast('Request sent! Waiting for admin approval…', '⏳', '#ffcc66');
+      startApprovalPolling(otp);
+
+    } else if (d.status === 'APPROVED') {
+      // ── Auto mode — instant approval ──
+      showPendingBanner(false);
+      showToast('Charging started! Welcome, ' + user, '⚡', '#99ffcc');
+      document.getElementById('otp-display').style.display = 'none';
+      document.getElementById('otp-input').value = '';
+      refreshStatus();
+
+    } else if (d.error) {
+      showToast(d.error, '❌', '#ff6666');
     }
-    refreshStatus();
-  } catch(e){ showToast('Cannot reach server','❌','#ff6666'); }
+  } catch(e) { showToast('Cannot reach server', '❌', '#ff6666'); }
 }
 
+/* ── PENDING BANNER ── */
+function showPendingBanner(show) {
+  const banner = document.getElementById('pending-banner');
+  const startBtn = document.getElementById('start-btn');
+  if (show) {
+    banner.classList.add('show');
+    startBtn.disabled = true;
+    startBtn.textContent = '⏳ Waiting…';
+  } else {
+    banner.classList.remove('show');
+    startBtn.disabled = false;
+    startBtn.textContent = '⚡ START POWER';
+  }
+}
+
+/* ── POLL FOR APPROVAL ── */
+function startApprovalPolling(otp) {
+  if (approvalPollTimer) clearInterval(approvalPollTimer);
+  approvalPollTimer = setInterval(async () => {
+    try {
+      const r = await fetch(`${BASE}/status?otp=${otp}`);
+      const d = await r.json();
+      if (d.status === 'APPROVED') {
+        clearInterval(approvalPollTimer);
+        approvalPollTimer = null;
+        pendingOTP = null;
+        showPendingBanner(false);
+        showToast('✅ Charging approved! Power is ON', '⚡', '#99ffcc');
+        document.getElementById('otp-display').style.display = 'none';
+        document.getElementById('otp-input').value = '';
+        refreshStatus();
+      } else if (d.status === 'REJECTED') {
+        clearInterval(approvalPollTimer);
+        approvalPollTimer = null;
+        pendingOTP = null;
+        showPendingBanner(false);
+        showToast('❌ Request rejected by admin. Please contact support.', '🚫', '#ff6666');
+      }
+    } catch(e) {}
+  }, 3000);
+}
+
+/* ── STOP ── */
 async function stopCharging() {
+  if (approvalPollTimer) { clearInterval(approvalPollTimer); approvalPollTimer = null; }
+  showPendingBanner(false);
+  pendingOTP = null;
   try {
-    await fetch(BASE+'/off');
-    showToast('Charging stopped','✅','#b3d9ff');
+    await fetch(BASE + '/off');
+    showToast('Charging stopped', '✅', '#b3d9ff');
     refreshStatus();
-  } catch(e){ showToast('Cannot reach server','❌','#ff6666'); }
+  } catch(e) { showToast('Cannot reach server', '❌', '#ff6666'); }
 }
 
+/* ── ADMIN CONTROLS (on customer page) ── */
 async function adminBlock() {
-  try { await fetch(BASE+'/admin/block'); showToast('Station blocked','🔒','#ffcc66'); refreshStatus(); } catch(e){}
+  try { await fetch(BASE + '/admin/block'); showToast('Station blocked', '🔒', '#ffcc66'); refreshStatus(); } catch(e) {}
 }
-
 async function adminUnblock() {
-  try { await fetch(BASE+'/admin/unblock'); showToast('Station unblocked','🔓','#99ffcc'); refreshStatus(); } catch(e){}
+  try { await fetch(BASE + '/admin/unblock'); showToast('Station unblocked', '🔓', '#99ffcc'); refreshStatus(); } catch(e) {}
 }
 
+/* ── INIT ── */
 renderParkingSlots();
 refreshStatus();
 refreshPower();
+refreshParking();
 setInterval(refreshStatus, 5000);
 setInterval(refreshPower, 3000);
+setInterval(refreshParking, 4000);
 </script>
 </body>
 </html>
