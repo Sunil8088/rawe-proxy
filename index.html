@@ -485,10 +485,67 @@ async function startCharging() {
   } catch(e){ showToast('Cannot reach server','❌','#ff6666'); }
 }
 
+<script>
+const BASE = '';
+let currentOtp = null;
+let parkingSlots = [true,true,true,true];
+
+async function requestOTP() {
+  const icon = document.getElementById('otp-btn-icon');
+  icon.classList.add('spin');
+  try {
+    const r = await fetch(BASE+'/request-otp');
+    const d = await r.json();
+    document.getElementById('otp-text').textContent = 'OTP: '+d.otp+' — auto-filled!';
+    const el = document.getElementById('otp-display');
+    el.style.display='flex';
+    document.getElementById('otp-input').value = d.otp;
+    showToast('OTP ready! Click Start Power','🔑','#99ffcc');
+    currentOtp = d.otp;
+  } catch(e){ showToast('Cannot reach server','❌','#ff6666'); }
+  finally{ icon.classList.remove('spin'); }
+}
+
+async function startCharging() {
+  const user = document.getElementById('username').value||'Guest';
+  const otp = document.getElementById('otp-input').value;
+  if(!otp){
+    document.getElementById('otp-input').classList.add('shake');
+    setTimeout(()=>document.getElementById('otp-input').classList.remove('shake'),400);
+    showToast('Get an OTP first!','⚠️','#ffcc66'); return;
+  }
+  try {
+    const r = await fetch(`${BASE}/on?user=${encodeURIComponent(user)}&otp=${otp}`);
+    const d = await r.json();
+    if(d.status==="PENDING"){
+      document.getElementById("status").innerText = "⏳ Waiting for admin approval...";
+      const interval = setInterval(async ()=>{
+        const rs = await fetch(`${BASE}/status?otp=${otp}`);
+        const s = await rs.json();
+        if(s.status==="APPROVED"){
+          document.getElementById("status").innerText = "✅ Charging approved!";
+          clearInterval(interval);
+        } else if(s.status==="REJECTED"){
+          document.getElementById("status").innerText = "❌ Request rejected by admin.";
+          clearInterval(interval);
+        }
+      },3000);
+    } else if(d.status==="APPROVED"){
+      showToast('Charging started! Welcome, '+user,'⚡','#99ffcc');
+      document.getElementById("status").innerText = "✅ Charging started!";
+    } else if(d.error){
+      showToast(d.error,'❌','#ff6666');
+      document.getElementById("status").innerText = "❌ "+d.error;
+    }
+    refreshStatus();
+  } catch(e){ showToast('Cannot reach server','❌','#ff6666'); }
+}
+
 async function stopCharging() {
   try {
     await fetch(BASE+'/off');
     showToast('Charging stopped','✅','#b3d9ff');
+    document.getElementById("status").innerText = "⏹ Charging stopped.";
     refreshStatus();
   } catch(e){ showToast('Cannot reach server','❌','#ff6666'); }
 }
@@ -508,4 +565,6 @@ setInterval(refreshStatus, 5000);
 setInterval(refreshPower, 3000);
 </script>
 </body>
+</html>
+
 </html>
