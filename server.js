@@ -14,173 +14,205 @@ const MQTT_USER = 'raweproxy';
 const MQTT_PASS = 'Rawe1234';
 const MQTT_TOPIC = 'sonoff1';
 
-// Connect to HiveMQ
 const client = mqtt.connect(MQTT_HOST, {
-    port: 8883,
-    username: MQTT_USER,
-    password: MQTT_PASS,
-    protocol: 'mqtts'
+  port: 8883,
+  username: MQTT_USER,
+  password: MQTT_PASS,
+  protocol: 'mqtts'
 });
 
-// Store latest power data
 let powerData = {
-    voltage: 0, current: 0, power: 0,
-    todayKwh: 0, totalKwh: 0, cost: "0.00"
+  voltage: 0, current: 0, power: 0,
+  todayKwh: 0, totalKwh: 0, cost: '0.00'
 };
 
 client.on('connect', () => {
-    console.log('MQTT Connected to HiveMQ!');
-    client.subscribe(`tele/${MQTT_TOPIC}/SENSOR`);
-    client.subscribe(`stat/${MQTT_TOPIC}/POWER`);
+  console.log('MQTT Connected to HiveMQ!');
+  client.subscribe(`tele/${MQTT_TOPIC}/SENSOR`);
+  client.subscribe(`stat/${MQTT_TOPIC}/POWER`);
 });
 
 client.on('message', (topic, message) => {
-    try {
-        const data = JSON.parse(message.toString());
-        if (topic === `tele/${MQTT_TOPIC}/SENSOR` && data.ENERGY) {
-            const e = data.ENERGY;
-            powerData = {
-                voltage: e.Voltage,
-                current: e.Current,
-                power: e.Power,
-                todayKwh: e.Today,
-                totalKwh: e.Total,
-                cost: (e.Today * RATE_PER_KWH).toFixed(2)
-            };
-        }
-    } catch (err) {}
+  try {
+    const data = JSON.parse(message.toString());
+    if (topic === `tele/${MQTT_TOPIC}/SENSOR` && data.ENERGY) {
+      const e = data.ENERGY;
+      powerData = {
+        voltage: e.Voltage,
+        current: e.Current,
+        power: e.Power,
+        todayKwh: e.Today,
+        totalKwh: e.Total,
+        cost: (e.Today * RATE_PER_KWH).toFixed(2)
+      };
+    }
+  } catch (err) {}
 });
 
 client.on('error', (err) => {
-    console.log('MQTT Error:', err.message);
+  console.log('MQTT Error:', err.message);
 });
 
+// ── STATE ──
 const SCHEDULE = { enabled: false, startHour: 6, endHour: 22 };
+
 function isWithinSchedule() {
-    if (!SCHEDULE.enabled) return true;
-    const hour = new Date().getHours();
-    return hour >= SCHEDULE.startHour && hour < SCHEDULE.endHour;
+  if (!SCHEDULE.enabled) return true;
+  const hour = new Date().getHours();
+  return hour >= SCHEDULE.startHour && hour < SCHEDULE.endHour;
 }
 
-let stationStatus = { state: "FREE", user: null, startedAt: null };
+let stationStatus = { state: 'FREE', user: null, startedAt: null };
 let currentOTP = null;
 let isBlocked = false;
 let parkingStatus = {
-    available: true, free: true, rate: 20,
-    slots: [true, true, true, true]
+  available: true, free: true, rate: 20,
+  slots: [true, true, true, true]
 };
 
-// --- Admin Approval System ---
-let pendingRequests = {};   // store OTP requests with status
-let adminMode = "auto";     // default mode: "auto" or "approval"
+// key: otp → { status, user, time }
+let pendingRequests = {};
+let adminMode = 'auto'; // 'auto' | 'approval'
 
-// OTP
+// ── OTP ──
 app.get('/request-otp', (req, res) => {
-    currentOTP = Math.floor(100000 + Math.random() * 900000).toString();
-    console.log(`OTP generated: ${currentOTP}`);
-    res.send({ message: "OTP generated.", otp: currentOTP });
+  currentOTP = Math.floor(100000 + Math.random() * 900000).toString();
+  console.log(`OTP generated: ${currentOTP}`);
+  res.send({ message: 'OTP generated.', otp: currentOTP });
 });
 
-// STATUS
+// ── STATUS ──
+// If ?otp= is provided, return that request's approval status
+// Otherwise return overall station status
 app.get('/status', (req, res) => {
-    const { otp } = req.query;
-    if (otp && pendingRequests[otp]) {
-        res.send({ status: pendingRequests[otp].status });
-    } else {
-        res.send({ ...stationStatus, blocked: isBlocked });
-    }
+  const { otp } = req.query;
+  if (otp && pendingRequests[otp]) {
+    return res.send({ status: pendingRequests[otp].status });
+  }
+  res.send({ ...stationStatus, blocked: isBlocked });
 });
 
-// ON
+// ── ON ──
 app.get('/on', (req, res) => {
-    if (isBlocked) return res.status(403).send({ error: "Station is blocked by admin" });
-    if (stationStatus.state === "BUSY") return res.status(409).send({ error: "Station is currently BUSY" });
-    if (!isWithinSchedule()) return res.status(403).send({ error: "Station is closed. Allowed hours: 6am-10pm" });
-    if (!req.query.otp || req.query.otp !== currentOTP) return res.status(401).send({ error: "Invalid or missing OTP" });
+  if (isBlocked) return res.status(403).send({ error: 'Station is blocked by admin' });
+  if (stationStatus.state === 'BUSY') return res.status(409).send({ error: 'Station is currently BUSY' });
+  if (!isWithinSchedule()) return res.status(403).send({ error: 'Station is closed. Allowed hours: 6am-10pm' });
+  if (!req.query.otp || req.query.otp !== currentOTP) return res.status(401).send({ error: 'Invalid or missing OTP' });
 
-    if (adminMode === "auto") {
-        client.publish(`cmnd/${MQTT_TOPIC}/Power`, 'ON');
-        console.log("Sonoff turned ON via MQTT");
+  const user = req.query.user || 'Guest';
 
-        currentOTP = null;
-        stationStatus = { state: "BUSY", user: req.query.user || "Guest", startedAt: new Date() };
-        res.send({ status: 'APPROVED', station: stationStatus });
-    } else {
-        pendingRequests[currentOTP] = { status: "PENDING", user: req.query.user || "Guest" };
-        res.send({ status: "PENDING", message: "Waiting for admin approval" });
-    }
+  if (adminMode === 'auto') {
+    client.publish(`cmnd/${MQTT_TOPIC}/Power`, 'ON');
+    console.log('Sonoff turned ON via MQTT');
+    currentOTP = null;
+    stationStatus = { state: 'BUSY', user, startedAt: new Date() };
+    res.send({ status: 'APPROVED', station: stationStatus });
+  } else {
+    // Save the OTP with timestamp so admin panel can list it
+    pendingRequests[currentOTP] = {
+      status: 'PENDING',
+      user,
+      otp: currentOTP,
+      time: new Date().toISOString()
+    };
+    console.log(`Pending request from ${user} (OTP: ${currentOTP})`);
+    res.send({ status: 'PENDING', message: 'Waiting for admin approval' });
+  }
 });
 
-// OFF
+// ── OFF ──
 app.get('/off', (req, res) => {
-    client.publish(`cmnd/${MQTT_TOPIC}/Power`, 'OFF');
-    console.log("Sonoff turned OFF via MQTT");
-
-    stationStatus = { state: "FREE", user: null, startedAt: null };
-    res.send({ status: 'OFF', station: stationStatus });
+  client.publish(`cmnd/${MQTT_TOPIC}/Power`, 'OFF');
+  console.log('Sonoff turned OFF via MQTT');
+  stationStatus = { state: 'FREE', user: null, startedAt: null };
+  res.send({ status: 'OFF', station: stationStatus });
 });
 
-// --- ADMIN ROUTES ---
+// ══════════════ ADMIN ROUTES ══════════════
+
+// GET all pending requests (for admin panel list)
+app.get('/admin/requests', (req, res) => {
+  const list = Object.values(pendingRequests);
+  res.send(list);
+});
+
+// Switch booking mode
 app.post('/admin/mode', (req, res) => {
-    const { mode } = req.body; // "auto" or "approval"
-    adminMode = mode;
-    res.send({ success: true, mode });
+  const { mode } = req.body; // 'auto' | 'approval'
+  adminMode = mode;
+  console.log(`Admin mode set to: ${mode}`);
+  res.send({ success: true, mode });
 });
 
+// Approve a request
 app.post('/admin/approve', (req, res) => {
-    const { otp } = req.body;
-    if (pendingRequests[otp]) {
-        pendingRequests[otp].status = "APPROVED";
-        client.publish(`cmnd/${MQTT_TOPIC}/Power`, 'ON');
-        stationStatus = { state: "BUSY", user: pendingRequests[otp].user, startedAt: new Date() };
-        res.send({ success: true, otp });
-    } else {
-        res.send({ success: false, message: "OTP not found" });
-    }
+  const { otp } = req.body;
+  if (pendingRequests[otp]) {
+    pendingRequests[otp].status = 'APPROVED';
+    client.publish(`cmnd/${MQTT_TOPIC}/Power`, 'ON');
+    stationStatus = { state: 'BUSY', user: pendingRequests[otp].user, startedAt: new Date() };
+    console.log(`Approved request OTP: ${otp}, user: ${pendingRequests[otp].user}`);
+    res.send({ success: true, otp });
+  } else {
+    res.send({ success: false, message: 'OTP not found' });
+  }
 });
 
+// Reject a request
 app.post('/admin/reject', (req, res) => {
-    const { otp } = req.body;
-    if (pendingRequests[otp]) {
-        pendingRequests[otp].status = "REJECTED";
-        res.send({ success: true, otp });
-    } else {
-        res.send({ success: false, message: "OTP not found" });
-    }
+  const { otp } = req.body;
+  if (pendingRequests[otp]) {
+    pendingRequests[otp].status = 'REJECTED';
+    console.log(`Rejected request OTP: ${otp}`);
+    res.send({ success: true, otp });
+  } else {
+    res.send({ success: false, message: 'OTP not found' });
+  }
 });
 
+// Force power ON/OFF
 app.post('/admin/force', (req, res) => {
-    const { action } = req.body; // "ON" or "OFF"
-    client.publish(`cmnd/${MQTT_TOPIC}/Power`, action);
-    res.send({ success: true, action });
+  const { action } = req.body; // 'ON' | 'OFF'
+  client.publish(`cmnd/${MQTT_TOPIC}/Power`, action);
+  if (action === 'OFF') {
+    stationStatus = { state: 'FREE', user: null, startedAt: null };
+  }
+  console.log(`Admin force ${action}`);
+  res.send({ success: true, action });
 });
 
-// ADMIN block/unblock
+// Block / Unblock
 app.get('/admin/block', (req, res) => {
-    isBlocked = true;
-    res.send({ message: "Station BLOCKED by admin" });
+  isBlocked = true;
+  console.log('Station BLOCKED by admin');
+  res.send({ message: 'Station BLOCKED by admin' });
 });
+
 app.get('/admin/unblock', (req, res) => {
-    isBlocked = false;
-    res.send({ message: "Station UNBLOCKED by admin" });
+  isBlocked = false;
+  console.log('Station UNBLOCKED by admin');
+  res.send({ message: 'Station UNBLOCKED by admin' });
 });
 
-// POWER DATA
+// ── POWER ──
 app.get('/power', (req, res) => {
-    res.send(powerData);
+  res.send(powerData);
 });
 
-// PARKING
-app.get('/parking', (req, res) => { res.send(parkingStatus); });
+// ── PARKING ──
+app.get('/parking', (req, res) => {
+  res.send(parkingStatus);
+});
+
 app.post('/parking/update', (req, res) => {
-    const { available, free, rate, slots } = req.body;
-    if (available !== undefined) parkingStatus.available = available;
-    if (free !== undefined) parkingStatus.free = free;
-    if (rate !== undefined) parkingStatus.rate = rate;
-    if (slots !== undefined) parkingStatus.slots = slots;
-    res.send({ message: "Parking updated", parking: parkingStatus });
+  const { available, free, rate, slots } = req.body;
+  if (available !== undefined) parkingStatus.available = available;
+  if (free !== undefined) parkingStatus.free = free;
+  if (rate !== undefined) parkingStatus.rate = rate;
+  if (slots !== undefined) parkingStatus.slots = slots;
+  res.send({ message: 'Parking updated', parking: parkingStatus });
 });
 
 app.listen(3000, () => {
-    console.log('Server running at http://localhost:3000');
+  console.log('RAWE Server running at http://localhost:3000');
 });
